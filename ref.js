@@ -54,7 +54,7 @@ dep.value = 20 // 触发set，从而触发notifyEffect，遍历effects，最终�
 function getDep(target, key) {
   let depsMap = targetMap.get(target)
   if (!depsMap) {
-    depsMap = new Map()
+    depsMap = new WeakMap()
     targetMap.set(target, depsMap)
   }
   let dep = depsMap.get(key)
