@@ -51,11 +51,3 @@ export function effect(fn, options: any = {}) {
   eff.run()
   return eff.run.bind(eff)
 }
-
-class A {
-  constructor(a, b) {}
-  clog() {
-    console.log(this)
-  }
-}
-const aa = new A(1, 2)
