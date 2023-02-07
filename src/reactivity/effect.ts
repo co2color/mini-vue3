@@ -2,7 +2,8 @@ let currentEffect
 
 class ReactiveEffect {
   private _fn
-  constructor(fn) {
+  // https://ts.xcatliu.com/advanced/class.html#%E5%8F%82%E6%95%B0%E5%B1%9E%E6%80%A7
+  constructor(fn, public scheduler?) {
     this._fn = fn
   }
   run() {
@@ -37,12 +38,24 @@ export function trigger(target, key) {
   const depsMap = targetMap.get(target)
   const dep = depsMap.get(key)
   for (let e of dep) {
-    e.run()
+    if (e.scheduler) {
+      e.scheduler()
+    } else {
+      e.run()
+    }
   }
 }
 
-export function effect(fn) {
-  const eff = new ReactiveEffect(fn)
+export function effect(fn, options: any = {}) {
+  const eff = new ReactiveEffect(fn, options?.scheduler)
   eff.run()
   return eff.run.bind(eff)
 }
+
+class A {
+  constructor(a, b) {}
+  clog() {
+    console.log(this)
+  }
+}
+const aa = new A(1, 2)
