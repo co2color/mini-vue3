@@ -1,5 +1,10 @@
 import { mutableHandlers, readonlyHandlers } from './baseHandlers'
 
+export const ReactiveFlags = {
+  IS_REACTIVE: '__v_isReactive',
+  IS_READONLY: '__v_isReadonly',
+}
+
 function createActiveObject(raw: any, baseHandlers: any) {
   return new Proxy(raw, baseHandlers)
 }
@@ -10,6 +15,15 @@ export function reactive(raw) {
 
 export function readonly(raw) {
   return createActiveObject(raw, readonlyHandlers)
+}
+
+export function isReactive(raw) {
+  // 如果是,就会触发get，return true
+  return !!raw[ReactiveFlags.IS_REACTIVE]
+}
+export function isReadonly(raw) {
+  // 如果是,就会触发get，return true
+  return !!raw[ReactiveFlags.IS_READONLY]
 }
 
 // 对于这段代码：
