@@ -6,6 +6,7 @@ class RefImpl {
   private _rawValue: any
   private _value: any
   public dep
+  public __v_isRef = true
   constructor(value) {
     this._rawValue = value
     // 如果是一个对象,需要用 reactive 包裹一下
@@ -37,4 +38,7 @@ function trackRefValue(ref) {
 
 export function ref(value) {
   return new RefImpl(value)
+}
+export function isRef(value) {
+  return !!value.__v_isRef
 }
