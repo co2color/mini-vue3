@@ -1,4 +1,8 @@
-import { mutableHandlers, readonlyHandlers } from './baseHandlers'
+import {
+  mutableHandlers,
+  readonlyHandlers,
+  shallowReadonlyHandlers,
+} from './baseHandlers'
 
 export const ReactiveFlags = {
   IS_REACTIVE: '__v_isReactive',
@@ -24,6 +28,10 @@ export function isReactive(raw) {
 export function isReadonly(raw) {
   // 如果是,就会触发get，return true
   return !!raw[ReactiveFlags.IS_READONLY]
+}
+
+export function shallowReadonly(raw) {
+  return createActiveObject(raw, shallowReadonlyHandlers)
 }
 
 // 对于这段代码：
