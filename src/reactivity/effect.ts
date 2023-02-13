@@ -1,6 +1,7 @@
 import { extend } from '../shared'
 
-let currentEffect
+let activeEffect
+let shouldTrack = false
 
 class reactiveEffect {
   private _fn: any
@@ -14,8 +15,22 @@ class reactiveEffect {
     this.scheduler = scheduler
   }
   run() {
-    currentEffect = this
-    return this._fn()
+    if (!this.active) {
+      return this._fn()
+    }
+    shouldTrack = true
+
+    // 执行的时候给全局的 activeEffect 赋值
+    // 利用全局属性来获取当前的 effect
+    activeEffect = this as any
+    // 执行用户传入的 fn
+    console.log('执行用户传入的 fn')
+    const result = this._fn()
+    // 重置
+    shouldTrack = false
+    activeEffect = undefined
+
+    return result
   }
   stop() {
     if (this.active) {
@@ -35,7 +50,15 @@ function cleanupEffect(effect: reactiveEffect) {
 }
 
 const targetMap = new Map() // 存target
+
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined
+}
+
 export function track(target, key) {
+  if (!isTracking()) {
+    return
+  }
   // target->key->dep
   // 1.存target
   // 2.存key
@@ -49,12 +72,23 @@ export function track(target, key) {
     dep = new Set()
     depsMap.set(key, dep)
   }
-  // 只有使用了effect，才会存在currentEffect
-  if (!currentEffect) {
-    return
+  trackEffects(dep)
+}
+
+export function trackEffects(dep) {
+  // 用 dep 来存放所有的 effect
+
+  // TODO
+  // 这里是一个优化点
+  // 先看看这个依赖是不是已经收集了，
+  // 已经收集的话，那么就不需要在收集一次了
+  // 可能会影响 code path change 的情况
+  // 需要每次都 cleanupEffect
+  // shouldTrack = !dep.has(activeEffect!);
+  if (!dep.has(activeEffect)) {
+    dep.add(activeEffect)
+    activeEffect.deps.push(dep)
   }
-  dep.add(currentEffect)
-  currentEffect.deps.push(dep)
 }
 
 export function trigger(target, key) {
@@ -64,11 +98,19 @@ export function trigger(target, key) {
   // 4.执行dep
   const depsMap = targetMap.get(target)
   const dep = depsMap.get(key)
-  for (let e of dep) {
-    if (e.scheduler) {
-      e.scheduler()
+  triggerEffects(dep)
+}
+
+export function triggerEffects(dep) {
+  // 执行收集到的所有的 effect 的 run 方法
+  for (const effect of dep) {
+    if (effect.scheduler) {
+      // scheduler 可以让用户自己选择调用的时机
+      // 这样就可以灵活的控制调用了
+      // 在 runtime-core 中，就是使用了 scheduler 实现了在 next ticker 中调用的逻辑
+      effect.scheduler()
     } else {
-      e.run()
+      effect.run()
     }
   }
 }
