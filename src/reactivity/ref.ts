@@ -42,3 +42,27 @@ export function ref(value) {
 export function isRef(value) {
   return !!value.__v_isRef
 }
+
+export function unRef(ref) {
+  return isRef(ref) ? ref.value : ref
+}
+
+const shallowUnwrapHandlers = {
+  get(target, key, receiver) {
+    // 如果里面是一个 ref 类型的话，那么就返回 .value
+    // 如果不是的话，那么直接返回value
+    return unRef(Reflect.get(target, key, receiver))
+  },
+  set(target, key, value, receiver) {
+    const oldValue = target[key]
+    if (isRef(oldValue) && !isRef(value)) {
+      return (target[key].value = value)
+    } else {
+      return Reflect.set(target, key, value, receiver)
+    }
+  },
+}
+
+export function proxyRefs(objectWithRefs) {
+  return new Proxy(objectWithRefs, shallowUnwrapHandlers)
+}
