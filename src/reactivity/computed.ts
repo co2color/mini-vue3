@@ -7,12 +7,10 @@ import { reactiveEffect } from './effect'
 // 此时会执行scheduler，而scheduler里面会把_dirty置为true
 // 此后执行computed.get，此时_dirty为true，就会run getter，拿到最新的值
 class ComputedRefImpl {
-  private getter: Function
   private _value: any
   private _effect: reactiveEffect
   private _dirty = true
   constructor(getter) {
-    this.getter = getter
     this._effect = new reactiveEffect(getter, () => {
       // 这是一个scheduler，作用是：当依赖的值发生变化的时候，
       // 会执行这个函数，而不是执行run进而执行getter
