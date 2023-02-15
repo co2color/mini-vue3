@@ -3,7 +3,7 @@ import { extend } from '../shared'
 let activeEffect
 let shouldTrack = false
 
-class reactiveEffect {
+export class reactiveEffect {
   private _fn: any
   deps = []
   active = true
@@ -14,6 +14,7 @@ class reactiveEffect {
     this._fn = fn
     this.scheduler = scheduler
   }
+  // run返回callback的结果
   run() {
     if (!this.active) {
       return this._fn()
@@ -25,6 +26,11 @@ class reactiveEffect {
     activeEffect = this as any
     // 执行用户传入的 fn
     console.log('执行用户传入的 fn')
+    // 这里之前一直纠结一个点，这个执行完，执行下面的activeEffect = undefined，那全过程activeEffect岂不是都为undefined了呢？
+    // （错误在于，我忽略了const result = this._fn()，把他当成了一句代码，没有去看_fn的内部，其内部还有很多代码，不能视为一句）
+    // 后来想明白了，执行this._fn()的时候，视角就应该跑去这个_fn的内部，如果这个_fn内部有Proxy.get/set被触发，就会track/trigger，
+    // 而如若执行get导致执行track，那么track里面会执行isTracking，此时上面的activeEffect是被赋值给了this的，所以isTracking返回true，于是就会执行trackEffects，
+    // 此时trackEffects里面的activeEffect并不是undefined，而是上面赋值的this。
     const result = this._fn()
     // 重置
     shouldTrack = false
@@ -123,6 +129,12 @@ export function effect(fn, options: any = {}) {
   runner.effect = eff
   return runner
 }
+
+// 1.new后，执行构造函数；
+// 2.执行run方法，此时activeEffect = this；并且执行effect里面的callback
+// 3.callback执行过程中，如果有Proxy.get/set被触发，就会track/trigger，此时activeEffect仍然为this，所以会执行trackEffects
+// 4.执行完callback后，activeEffect = undefined
+// 下一轮：当callback的监听的数据发生变化时，会因为触发set而执行trigger进而执行triggerEffects，然后触发run，进而执行callback
 
 // runner = effect(callback)
 // 因此effect返回的是runner，其中有effect这个属性
