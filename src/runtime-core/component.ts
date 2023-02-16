@@ -15,8 +15,9 @@ export function setupComponent(instance) {
 }
 
 function setupStatefulComponent(instance) {
-  const Component = instance.type
+  const Component = instance.vnode.type
   const { setup } = Component
+
   if (setup) {
     const setupResult = setup()
     handleSetupResult(instance, setupResult)
@@ -24,6 +25,8 @@ function setupStatefulComponent(instance) {
 }
 
 function handleSetupResult(instance, setupResult) {
+  console.log(setupResult)
+
   if (typeof setupResult === 'object') {
     instance.setupState = setupResult
   }
