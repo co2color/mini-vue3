@@ -1,7 +1,7 @@
 import { isObject } from '../shared'
 import { createComponentInstance, setupComponent } from './component'
 
-export function render(vnode, container) {
+export function render(vnode, container: HTMLElement) {
   // ...
   patch(vnode, container)
 }
