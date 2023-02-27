@@ -19,7 +19,7 @@ function processElement(vnode, container) {
   mountElement(vnode, container)
 }
 function mountElement(vnode: any, container: any) {
-  const el = document.createElement(vnode.type)
+  const el = (vnode.el = document.createElement(vnode.type))
   const { children } = vnode
   if (typeof children === 'string') {
     el.textContent = children
@@ -43,11 +43,16 @@ function processComponent(vnode, container) {
 function mountComponent(vnode, container) {
   const instance = createComponentInstance(vnode)
 
-  setupComponent(instance)
-  setupRenderEffect(instance, container)
+  setupComponent(instance) // 调用App中的setup和render
+  setupRenderEffect(instance, vnode, container)
 }
-function setupRenderEffect(instance, container) {
+function setupRenderEffect(instance, vnode, container) {
   const { proxy } = instance
   const subTree = instance.render.call(proxy)
+
   patch(subTree, container)
+  console.log(subTree);
+  
+  // 如果所有element都已经初始化完成
+  vnode.el = subTree.el
 }
