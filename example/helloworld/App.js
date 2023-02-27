@@ -8,15 +8,12 @@ export const App = {
         id: 'root',
         class: ['red'],
       },
-      [
-        h('p', { class: 'yellow' }, 'p-test'),
-        h('h3', { class: 'red' }, 'h3——test'),
-      ]
+      'hi, ' + this.msg
     )
   },
   setup() {
     return {
-      // msg: 'Hello World',
+      msg: 'Hello World',
     }
   },
 }
