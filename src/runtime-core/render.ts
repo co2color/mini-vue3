@@ -1,4 +1,6 @@
 import { isObject } from '../shared'
+import { ShapeFlags } from '../shared/ShapeFlags'
+
 import { createComponentInstance, setupComponent } from './component'
 
 export function render(vnode, container: HTMLElement) {
@@ -7,10 +9,11 @@ export function render(vnode, container: HTMLElement) {
 }
 function patch(vnode, container) {
   // ...
-  // check vnode（string or object）
-  if (typeof vnode.type === 'string') {
+  // ShapeFlags
+  const { shapeFlag } = vnode
+  if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container)
-  } else if (isObject(vnode.type)) {
+  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     processComponent(vnode, container)
   }
 }
@@ -20,13 +23,11 @@ function processElement(vnode, container) {
 }
 function mountElement(vnode: any, container: any) {
   const el = (vnode.el = document.createElement(vnode.type))
-  const { children } = vnode
-  if (typeof children === 'string') {
+  const { children, shapeFlag } = vnode
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children
-  } else if (Array.isArray(children)) {
-    children.forEach((child) => {
-      patch(child, el)
-    })
+  } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+    mountChildren(vnode, el)
   }
 
   if (vnode.props) {
@@ -36,23 +37,28 @@ function mountElement(vnode: any, container: any) {
   }
   container.appendChild(el)
 }
+
+function mountChildren(vnode, container) {
+  vnode.children.forEach((child) => {
+    patch(child, container)
+  })
+}
+
 function processComponent(vnode, container) {
   mountComponent(vnode, container)
 }
 
-function mountComponent(vnode, container) {
-  const instance = createComponentInstance(vnode)
+function mountComponent(initialVNode, container) {
+  const instance = createComponentInstance(initialVNode)
 
   setupComponent(instance) // 调用App中的setup和render
-  setupRenderEffect(instance, vnode, container)
+  setupRenderEffect(instance, initialVNode, container)
 }
-function setupRenderEffect(instance, vnode, container) {
+function setupRenderEffect(instance, initialVNode, container) {
   const { proxy } = instance
   const subTree = instance.render.call(proxy)
 
   patch(subTree, container)
-  console.log(subTree);
-  
   // 如果所有element都已经初始化完成
-  vnode.el = subTree.el
+  initialVNode.el = subTree.el
 }
