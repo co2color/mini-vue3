@@ -1,3 +1,4 @@
+import { isObject } from '../shared'
 import {
   mutableHandlers,
   readonlyHandlers,
@@ -9,16 +10,21 @@ export const ReactiveFlags = {
   IS_READONLY: '__v_isReadonly',
 }
 
-function createActiveObject(raw: any, baseHandlers: any) {
+function createReactiveObject(raw: any, baseHandlers: any) {
+  // raw必须是对象
+  if (!isObject(raw)) {
+    console.warn(`target ${raw}必须是对象`)
+    return raw
+  }
   return new Proxy(raw, baseHandlers)
 }
 
 export function reactive(raw) {
-  return createActiveObject(raw, mutableHandlers)
+  return createReactiveObject(raw, mutableHandlers)
 }
 
 export function readonly(raw) {
-  return createActiveObject(raw, readonlyHandlers)
+  return createReactiveObject(raw, readonlyHandlers)
 }
 
 export function isReactive(raw) {
@@ -35,7 +41,7 @@ export function isProxy(raw) {
 }
 
 export function shallowReadonly(raw) {
-  return createActiveObject(raw, shallowReadonlyHandlers)
+  return createReactiveObject(raw, shallowReadonlyHandlers)
 }
 
 // 对于这段代码：
