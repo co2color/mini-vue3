@@ -9,9 +9,6 @@ export const App = {
       {
         id: 'root',
         class: ['red'],
-        onClick: () => {
-          console.log(this.msg)
-        },
       },
       [
         h(Foo, {

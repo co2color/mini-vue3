@@ -4,21 +4,21 @@ import { Foo } from './Foo.js'
 export const App = {
   name: 'App',
   render() {
+    const foo = h(Foo, {
+      propsValue: 'bob',
+      onAdd: (a, b) => {
+        console.log('onAdd', a, b)
+      },
+      onAddFoo: (a, b) => {
+        console.log('onAddFoo', a, b)
+      },
+    })
     return h(
       'div',
       {
         class: 'App',
       },
-      [
-        h(Foo, {
-          onAdd: (a, b) => {
-            console.log('onAdd', a, b)
-          },
-          onAddFoo: (a, b) => {
-            console.log('onAddFoo', a, b)
-          },
-        }),
-      ]
+      [foo]
     )
   },
   setup() {

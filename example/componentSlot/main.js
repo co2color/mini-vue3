@@ -5,7 +5,7 @@ const rootComponent = document.querySelector('#app')
 createApp(App).mount(rootComponent)
 
 /* 
-执行createApp(App).mount时，创建vnode，将vnoderootComponent传给render；
+执行createApp(App).mount时，创建vnode，将上面的rootComponent传给render；
 接着执行./render.ts中的render()函数。
 render()函数中执行patch，在patch中判断vnode是否是element（对象）：
   如果是element则执行processComponent(vnode, container)

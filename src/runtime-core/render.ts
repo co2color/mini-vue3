@@ -7,6 +7,8 @@ export function render(vnode, container: HTMLElement) {
   // ...
   patch(vnode, container)
 }
+
+// patch函数的作用就是将vnode渲染到container中，即container.appendChild(true_node)
 function patch(vnode, container) {
   // ...
   // ShapeFlags
@@ -59,8 +61,8 @@ function processComponent(vnode, container) {
 function mountComponent(initialVNode, container) {
   const instance = createComponentInstance(initialVNode)
 
-  setupComponent(instance) // 调用App中的setup和render
-  setupRenderEffect(instance, initialVNode, container)
+  setupComponent(instance) // 调用App中的setup
+  setupRenderEffect(instance, initialVNode, container) // 调用App中的render
 }
 function setupRenderEffect(instance, initialVNode, container) {
   const { proxy } = instance

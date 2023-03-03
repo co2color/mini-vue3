@@ -4,7 +4,12 @@ const rootComponent = document.querySelector('#app')
 
 createApp(App).mount(rootComponent)
 
+
+
 /* 
+h函数（即createVNode）的第一个参数type，就是App这个对象，
+该对象相当于一个组件，包含render和setup等等。
+createApp(App)说明创建一个App组件，mount(rootComponent)说明将App组件挂载到rootComponent上。
 执行createApp(App).mount时，创建vnode，将vnoderootComponent传给render；
 接着执行./render.ts中的render()函数。
 render()函数中执行patch，在patch中判断vnode是否是element（对象）：
@@ -43,4 +48,3 @@ setupComponent执行完毕后，视角重新回到mountComponent函数中，执�
  最后，将dom节点挂载到container上（container.appendChild）
 
 */
-
