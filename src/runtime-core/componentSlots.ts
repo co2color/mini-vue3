@@ -1,21 +1,10 @@
-export function initSlots(instance, children) {
-  normalizeObjectSlots(children, instance.slots)
+import { ShapeFlags } from '../shared/ShapeFlags'
 
-  // const { vnode: { shapeFlag } } = instance
-  // if (shapeFlag & 32 /* SLOTS_CHILDREN */) {
-  //     instance.slots = children
-  // } else {
-  //     instance.slots = {}
-  //     if (children) {
-  //     for (let i = 0; i < children.length; i++) {
-  //         const child = children[i]
-  //         const { name } = child.props
-  //         if (name) {
-  //         instance.slots[name] = child
-  //         }
-  //     }
-  //     }
-  // }
+export function initSlots(instance, children) {
+  const { vnode } = instance
+  if (vnode.shapeFlag & ShapeFlags.SLOT_CHILDREN) {
+    normalizeObjectSlots(children, instance.slots)
+  }
 }
 
 function normalizeSlotValue(value) {
@@ -25,6 +14,6 @@ function normalizeSlotValue(value) {
 function normalizeObjectSlots(children, slots) {
   for (const key in children) {
     const value = children[key]
-    slots[key] = normalizeSlotValue(value)
+    slots[key] = (props) => normalizeSlotValue(value(props))
   }
 }

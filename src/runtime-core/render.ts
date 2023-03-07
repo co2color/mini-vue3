@@ -27,8 +27,11 @@ function mountElement(vnode: any, container: any) {
   const el = (vnode.el = document.createElement(vnode.type))
   const { children, shapeFlag } = vnode
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+    // 如：h('p', {}, 'Tag <p>'s content'),children就是'Tag <p>'s content'
     el.textContent = children
   } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+    // 如：h('p', {}, [h('span', {}, 'span1 content'), h('span', {}, 'span2 content')])
+    // children就是[h('span', {}, 'span1 content'), h('span', {}, 'span2 content')]
     mountChildren(vnode, el)
   }
 

@@ -9,11 +9,11 @@ export const App = {
       {},
       {
         // 第三个参数，具名插槽
-        header: h('p', {}, 'header'),
-        footer: h('p', {}, 'footer'),
+        header: (props) => h('p', {}, 'header' + props.age), 
+        footer: () => h('p', {}, 'footer'),
       }
     )
-    // h函数的第1个参数如果是个对象，那么就会被当做组件来处理（processComponent）
+    // h函数的第1个参数如果是个对象，如上面的foo，那么就会被当做组件来处理（processComponent）
     // 这时候第三个 参数children就会被当做组件的插槽，也就是initSlots(instance, instance.vnode.children)
     // 将Chilren传给initSlots，然后在initSlots中将children赋值给instance
 
