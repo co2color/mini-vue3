@@ -2,6 +2,7 @@ import { isObject } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 
 import { createComponentInstance, setupComponent } from './component'
+import { Fragment, Text } from './vnode'
 
 export function render(vnode, container: HTMLElement) {
   // ...
@@ -11,15 +12,33 @@ export function render(vnode, container: HTMLElement) {
 // patch函数的作用就是将vnode渲染到container中，即container.appendChild(true_node)
 function patch(vnode, container) {
   // ...
-  // ShapeFlags
-  const { shapeFlag } = vnode
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    processElement(vnode, container)
-  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    processComponent(vnode, container)
+  const { type, shapeFlag } = vnode
+
+  // if type=== Fragment
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, container)
+      break
+    case Text:
+      processText(vnode, container)
+      break
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, container)
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, container)
+      }
+      break
   }
 }
 
+function processFragment(vnode, container) {
+  mountChildren(vnode, container)
+}
+function processText(vnode, container) {
+  const textNode = (vnode.el = document.createTextNode(vnode.children))
+  container.appendChild(textNode)
+}
 function processElement(vnode, container) {
   mountElement(vnode, container)
 }

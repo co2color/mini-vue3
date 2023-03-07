@@ -1,4 +1,4 @@
-import { h } from '../../lib/guide-mini-vue.esm.js'
+import { h, createTextVNode } from '../../lib/guide-mini-vue.esm.js'
 import { Foo } from './Foo.js'
 
 export const App = {
@@ -9,7 +9,11 @@ export const App = {
       {},
       {
         // 第三个参数，具名插槽
-        header: (props) => h('p', {}, 'header' + props.age), 
+        // callback在renderSlots中的slot(props)被调用
+        header: (props) => [
+          h('p', {}, 'header' + props.age),
+          createTextVNode('text node content'),
+        ],
         footer: () => h('p', {}, 'footer'),
       }
     )
