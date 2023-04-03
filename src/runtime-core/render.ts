@@ -5,7 +5,11 @@ import { createAppAPI } from './createApp'
 import { Fragment, Text } from './vnode'
 
 export function createRenderer(options) {
-  const { createElement, patchProp, insert } = options
+  const {
+    createElement: hostCreateElement,
+    patchProp: hostPatchProp,
+    insert: hostInsert,
+  } = options
 
   function render(vnode, container: HTMLElement) {
     // ...
@@ -46,7 +50,7 @@ export function createRenderer(options) {
     mountElement(vnode, container, parentComponent)
   }
   function mountElement(vnode: any, container: any, parentComponent) {
-    const el = (vnode.el = createElement(vnode.type))
+    const el = (vnode.el = hostCreateElement(vnode.type))
     const { children, shapeFlag } = vnode
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       // 如：h('p', {}, 'Tag <p>'s content'),children就是'Tag <p>'s content'
@@ -68,11 +72,11 @@ export function createRenderer(options) {
         //   continue
         // }
         // el.setAttribute(key, val)
-        patchProp(el, key, val)
+        hostPatchProp(el, key, val)
       }
     }
     // container.appendChild(el)
-    insert(el, container)
+    hostInsert(el, container)
   }
 
   function mountChildren(vnode, container, parentComponent) {
