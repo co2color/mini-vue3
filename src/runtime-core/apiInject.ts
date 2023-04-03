@@ -6,7 +6,7 @@ export function provide(key, value) {
   if (currentInstance) {
     let { provides } = currentInstance
 
-    const parentProvides = currentInstance.parent?.provides
+    const parentProvides = currentInstance.parent?.provides 
 
     if (parentProvides === provides) {
         // 原型链
