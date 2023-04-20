@@ -48,7 +48,17 @@ export function createRenderer(options) {
     container.appendChild(textNode)
   }
   function processElement(n1, n2, container, parentComponent) {
-    mountElement(n2, container, parentComponent)
+    if (!n1) {
+      mountElement(n2, container, parentComponent)
+    } else {
+      patchElement(n1, n2, container)
+    }
+  }
+
+  function patchElement(n1, n2, container) {
+    console.log('n1', n1)
+    console.log('n2', n2)
+    // todo ：对比props和children
   }
   function mountElement(vnode: any, container: any, parentComponent) {
     const el = (vnode.el = hostCreateElement(vnode.type))
