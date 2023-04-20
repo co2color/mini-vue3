@@ -15,7 +15,7 @@ export function createComponentInstance(vnode, parent) {
     slots: {},
     provides: parent ? parent.provides : {},
     parent,
-    // isMounted: false,
+    isMounted: false,
   }
   component.emit = emit.bind(null, component) as any // 第一个参数是this，第二个参数是用户传入的参数
   return component
@@ -48,7 +48,7 @@ function handleSetupResult(instance, setupResult) {
   if (typeof setupResult === 'object') {
     instance.setupState = proxyRefs(setupResult)
   }
-  finishComponentSetup(instance);
+  finishComponentSetup(instance)
 }
 function finishComponentSetup(instance: any) {
   const Component = instance.type
