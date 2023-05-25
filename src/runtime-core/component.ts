@@ -16,6 +16,7 @@ export function createComponentInstance(vnode, parent) {
     provides: parent ? parent.provides : {},
     parent,
     isMounted: false,
+    subTree: {},
   }
   component.emit = emit.bind(null, component) as any // 第一个参数是this，第二个参数是用户传入的参数
   return component

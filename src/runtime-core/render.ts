@@ -59,7 +59,22 @@ export function createRenderer(options) {
     console.log('n1', n1)
     console.log('n2', n2)
     // todo ：对比props和children
+    const oldProps = n1.props || {}
+    const newProps = n2.props || {}
+    const el = (n2.el = n1.el)
+    patchProps(el, oldProps, newProps)
   }
+
+  function patchProps(el, oldProps, newProps) {
+    for (const key in newProps) {
+      const prevProp = oldProps[key]
+      const nextProp = newProps[key]
+      if (prevProp !== nextProp) {
+        hostPatchProp(el, key, prevProp, nextProp)
+      }
+    }
+  }
+
   function mountElement(vnode: any, container: any, parentComponent) {
     const el = (vnode.el = hostCreateElement(vnode.type))
     const { children, shapeFlag } = vnode
@@ -83,7 +98,7 @@ export function createRenderer(options) {
         //   continue
         // }
         // el.setAttribute(key, val)
-        hostPatchProp(el, key, val)
+        hostPatchProp(el, key, null, val)
       }
     }
     // container.appendChild(el)
