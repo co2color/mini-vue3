@@ -2,13 +2,14 @@ export const extend = Object.assign
 
 export const EMPTY_OBJ = {}
 
-export const isObject = (val) => val !== null && typeof val === 'object'
+export const isObject = val => val !== null && typeof val === 'object'
 
 export function hasChanged(value, oldValue) {
   return !Object.is(value, oldValue)
 }
-export const hasOwn = (val, key) =>
-  Object.prototype.hasOwnProperty.call(val, key)
+export function hasOwn(val, key) {
+  return Object.prototype.hasOwnProperty.call(val, key)
+}
 
 // 驼峰转连字符
 export function hyphenate(str: string) {
@@ -19,6 +20,7 @@ export function camelize(str: string) {
   return str.replace(/-(\w)/g, (_, c) => (c ? c.toUpperCase() : ''))
 }
 
-export const capitalize = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1)
-export const toHandlerKey = (str: string) => (str ? `on${capitalize(str)}` : ``)
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+export const toHandlerKey = (str: string) => (str ? `on${capitalize(str)}` : '')
