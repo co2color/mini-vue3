@@ -9,12 +9,14 @@ export function createVNode(type, props?, children?) {
     type,
     props,
     children,
+    key: props && props.key,
     el: null,
     shapeFlag: getShapeFlag(type),
   }
   if (Array.isArray(children)) {
     vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN
-  } else {
+  }
+  else {
     vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN
   }
 

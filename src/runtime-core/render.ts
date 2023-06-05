@@ -94,6 +94,49 @@ export function createRenderer(options) {
         hostSetElementText(container, '')
         mountChildren(c2, container, parentComponent)
       }
+      else {
+        // array -> array
+        patchKeyedChildren(c1, c2, container, parentComponent)
+      }
+    }
+  }
+
+  function patchKeyedChildren(c1, c2, container, parentComponent) {
+    let i = 0
+    let e1 = c1.length - 1
+    let e2 = c2.length - 1
+
+    // 检测n1和n2是否一样(type key)
+    function isSameVNodeType(n1, n2) {
+      return n1.type === n2.type && n1.key === n2.key
+    }
+
+    // 左侧
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[i]
+      const n2 = c2[i]
+      if (isSameVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent)
+      }
+      else {
+        break
+      }
+      i++
+    }
+    console.log(i)
+
+    // 右侧
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[e1]
+      const n2 = c2[e2]
+      if (isSameVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent)
+      }
+      else {
+        break
+      }
+      e1--
+      e2--
     }
   }
 
