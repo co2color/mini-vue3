@@ -1,4 +1,4 @@
-import { createVNode, Fragment } from '../vnode'
+import { Fragment, createVNode } from '../vnode'
 
 // renderSlots返回的其实就是一个h函数
 export function renderSlots(slots, name, props) {

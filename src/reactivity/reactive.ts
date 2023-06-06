@@ -45,7 +45,7 @@ export function shallowReadonly(raw) {
 }
 
 // 对于这段代码：
-/* 
+/*
 const user = reactive({ age: 19 })
 effect(() => {
   console.log(user.age, 'user.age')

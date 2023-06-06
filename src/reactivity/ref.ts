@@ -13,10 +13,12 @@ class RefImpl {
     this._value = convert(value)
     this.dep = new Set()
   }
+
   get value() {
     trackRefValue(this)
     return this._value
   }
+
   set value(newValue) {
     if (hasChanged(newValue, this._rawValue)) {
       this._value = convert(newValue)
@@ -60,7 +62,8 @@ const shallowUnwrapHandlers = {
     const oldValue = target[key]
     if (isRef(oldValue) && !isRef(value)) {
       return (target[key].value = value)
-    } else {
+    }
+    else {
       return Reflect.set(target, key, value, receiver)
     }
   },

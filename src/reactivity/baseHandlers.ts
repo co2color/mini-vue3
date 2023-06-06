@@ -1,12 +1,13 @@
-import { track, trigger } from './effect'
-import { reactive, ReactiveFlags, readonly } from './reactive'
 import { extend, isObject } from '../shared'
+import { track, trigger } from './effect'
+import { ReactiveFlags, reactive, readonly } from './reactive'
 
-function createGetter(isReadonly: boolean, shallow: boolean = false) {
+function createGetter(isReadonly: boolean, shallow = false) {
   return function get(target, key) {
     if (key === ReactiveFlags.IS_REACTIVE && !isReadonly) {
       return true
-    } else if (key === ReactiveFlags.IS_READONLY) {
+    }
+    else if (key === ReactiveFlags.IS_READONLY) {
       return isReadonly
     }
     const res = Reflect.get(target, key)
@@ -27,7 +28,7 @@ function createSetter(isReadonly: boolean) {
   return function set(target, key, value) {
     if (isReadonly) {
       console.warn(
-        `Set operation on key "${String(key)}" failed: target is readonly.`
+        `Set operation on key "${String(key)}" failed: target is readonly.`,
       )
       return true
     }

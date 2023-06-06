@@ -14,6 +14,7 @@ export class reactiveEffect {
     this._fn = fn
     this.scheduler = scheduler
   }
+
   // run返回callback的结果
   run() {
     if (!this.active) {
@@ -38,6 +39,7 @@ export class reactiveEffect {
 
     return result
   }
+
   stop() {
     if (this.active) {
       cleanupEffect(this)
@@ -115,7 +117,8 @@ export function triggerEffects(dep) {
       // 这样就可以灵活的控制调用了
       // 在 runtime-core 中，就是使用了 scheduler 实现了在 next ticker 中调用的逻辑
       effect.scheduler()
-    } else {
+    }
+    else {
       effect.run()
     }
   }
