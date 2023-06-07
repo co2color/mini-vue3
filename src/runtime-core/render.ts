@@ -433,6 +433,7 @@ export function createRenderer(options) {
     })
   }
   return {
+    // 这里看不到调用逻辑的话就去看createApp.ts的注释
     createApp: createAppAPI(render),
   }
 }
