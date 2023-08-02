@@ -5,9 +5,16 @@ function createElement(type) {
 }
 function patchProp(el, key, prevVal, nextVal) {
   const isOn = (key: string) => /^on[A-Z]/.test(key)
+  const event = key.slice(2).toLowerCase()
   if (isOn(key)) {
-    const event = key.slice(2).toLowerCase()
-    el.addEventListener(event, nextVal)
+    if (nextVal) {
+      // 添加事件
+      el.addEventListener(event, nextVal)
+    }
+    else {
+      // 删除事件
+      el.removeEventListener(event, prevVal)
+    }
   }
   else {
     if (nextVal === undefined || nextVal === null) {

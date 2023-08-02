@@ -13,6 +13,22 @@ export default {
     }
   },
   render() {
-    return this.isChange ? h('div', {}, nextChildren) : h('div', {}, prevChildren)
+    return this.isChange
+      ? h(
+        'div',
+        {
+
+        },
+        nextChildren,
+      )
+      : h(
+        'div',
+        {
+          onClick: () => {
+            console.log(123)
+          },
+        },
+        prevChildren,
+      )
   },
 }

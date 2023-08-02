@@ -110,7 +110,7 @@ export function createRenderer(options) {
     // todo ：对比props和children
     const oldProps = n1.props || EMPTY_OBJ
     const newProps = n2.props || EMPTY_OBJ
-    const el = (n2.el = n1.el)
+    const el = (n2.el = n1.el) // 相当于两行代码：n2.el = n1.el; const el = n2.el
     patchChildren(n1, n2, el, parentComponent, anchor)
     patchProps(el, oldProps, newProps)
   }
@@ -342,21 +342,32 @@ export function createRenderer(options) {
   }
 
   function patchProps(el, oldProps, newProps) {
+    // 如果props没有变化，那么直接返回，不需要处理
     if (oldProps === newProps) {
       return
     }
 
+    // props有变化，需要把新的props设置到el上
     for (const key in newProps) {
       const prevProp = oldProps[key]
       const nextProp = newProps[key]
       if (prevProp !== nextProp) {
+        // 这里有两种情况：
+        // 第一种情况：key在newProps中存在，但是在oldProps中不存在，说明是新增prop如：h('p', {id: 'p'}),oldProps是{},newProps是{id: 'p'}
+        // 那么这时候的key为id，prevProp为undefined，nextProp为p，这时候就应该把id: p设置到el上
+
+        // 第二种情况：key在newProps中存在，但是在oldProps中也存在，但是值不一样，说明是修改了一个prop如：oldProps是{id: 'p_old'},newProps是{id: 'p_new'}
+        // 那么这时候的key为id，prevProp为p_old，nextProp为p_new，这时候就应该把id: p_new设置到el上,覆盖掉p_old这个原来的值
         hostPatchProp(el, key, prevProp, nextProp)
       }
     }
 
+    // 删除新的props中不存在的props（原来存在某个prop，但用户操作后把该prop删除了）
     if (oldProps !== EMPTY_OBJ) {
       for (const key in oldProps) {
         if (!(key in newProps)) {
+          // 如果old中的key在new中不存在，那么就应该把这个key从el上删除
+          // 第四个参数设为null，表示删除
           hostPatchProp(el, key, oldProps[key], null)
         }
       }
