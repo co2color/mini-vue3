@@ -47,6 +47,8 @@ function getSequence(arr: number[]): number[] {
   return result
 }
 
+function componentUpdateFn() {}
+
 function updateComponentPreRender(instance, nextVNode) {
   // 更新 nextVNode 的组件实例
   // 现在 instance.vnode 是组件实例更新前的
