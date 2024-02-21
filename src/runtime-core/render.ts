@@ -47,7 +47,7 @@ function getSequence(arr: number[]): number[] {
   return result
 }
 
-function componentUpdateFn() {}
+function setupRenderEffect(instance, initialVNode, container) { }
 
 function updateComponentPreRender(instance, nextVNode) {
   // 更新 nextVNode 的组件实例
