@@ -47,6 +47,25 @@ function getSequence(arr: number[]): number[] {
   return result
 }
 
+function updateComponentPreRender(instance, nextVNode) {
+  // 更新 nextVNode 的组件实例
+  // 现在 instance.vnode 是组件实例更新前的
+  // 所以之前的 props 就是基于 instance.vnode.props 来获取
+  // 接着需要更新 vnode ，方便下一次更新的时候获取到正确的值
+  nextVNode.component = instance;
+  // TODO 后面更新 props 的时候需要对比
+  // const prevProps = instance.vnode.props;
+  instance.vnode = nextVNode;
+  instance.next = null;
+
+  const { props } = nextVNode;
+  console.log("更新组件的 props", props);
+  instance.props = props;
+  console.log("更新组件的 slots");
+  // TODO 更新组件的 slots
+  // 需要重置 vnode
+}
+
 export function createRenderer(options) {
   const {
     createElement: hostCreateElement,
