@@ -25,8 +25,7 @@ function getSequence(arr: number[]): number[] {
         c = (u + v) >> 1
         if (arr[result[c]] < arrI) {
           u = c + 1
-        }
-        else {
+        } else {
           v = c
         }
       }
@@ -47,22 +46,21 @@ function getSequence(arr: number[]): number[] {
   return result
 }
 
-
 function updateComponentPreRender(instance, nextVNode) {
   // 更新 nextVNode 的组件实例
   // 现在 instance.vnode 是组件实例更新前的
   // 所以之前的 props 就是基于 instance.vnode.props 来获取
   // 接着需要更新 vnode ，方便下一次更新的时候获取到正确的值
-  nextVNode.component = instance;
+  nextVNode.component = instance
   // TODO 后面更新 props 的时候需要对比
   // const prevProps = instance.vnode.props;
-  instance.vnode = nextVNode;
-  instance.next = null;
+  instance.vnode = nextVNode
+  instance.next = null
 
-  const { props } = nextVNode;
-  console.log("更新组件的 props", props);
-  instance.props = props;
-  console.log("更新组件的 slots");
+  const { props } = nextVNode
+  console.log('更新组件的 props', props)
+  instance.props = props
+  console.log('更新组件的 slots')
   // TODO 更新组件的 slots
   // 需要重置 vnode
 }
@@ -97,9 +95,7 @@ export function createRenderer(options) {
       default:
         if (shapeFlag & ShapeFlags.ELEMENT) {
           processElement(n1, n2, container, parentComponent, anchor)
-        }
-
-        else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
           processComponent(n1, n2, container, parentComponent, anchor)
         }
 
@@ -117,9 +113,7 @@ export function createRenderer(options) {
   function processElement(n1, n2, container, parentComponent, anchor) {
     if (!n1) {
       mountElement(n2, container, parentComponent, anchor)
-    }
-
-    else {
+    } else {
       patchElement(n1, n2, container, parentComponent, anchor)
     }
   }
@@ -149,21 +143,25 @@ export function createRenderer(options) {
       if (c1 !== c2) {
         hostSetElementText(container, c2)
       }
-    }
-    else {
+    } else {
       // new array
       if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
         hostSetElementText(container, '')
         mountChildren(c2, container, parentComponent, anchor)
-      }
-      else {
+      } else {
         // array -> array
         patchKeyedChildren(c1, c2, container, parentComponent, anchor)
       }
     }
   }
 
-  function patchKeyedChildren(c1, c2, container, parentComponent, parentAnchor) {
+  function patchKeyedChildren(
+    c1,
+    c2,
+    container,
+    parentComponent,
+    parentAnchor
+  ) {
     const l2 = c2.length
     let i = 0
     let e1 = c1.length - 1
@@ -180,8 +178,7 @@ export function createRenderer(options) {
       const n2 = c2[i]
       if (isSameVNodeType(n1, n2)) {
         patch(n1, n2, container, parentComponent, parentAnchor)
-      }
-      else {
+      } else {
         break
       }
       i++
@@ -194,8 +191,7 @@ export function createRenderer(options) {
       const n2 = c2[e2]
       if (isSameVNodeType(n1, n2)) {
         patch(n1, n2, container, parentComponent, parentAnchor)
-      }
-      else {
+      } else {
         break
       }
       e1--
@@ -219,8 +215,7 @@ export function createRenderer(options) {
         hostRemove(c1[i].el)
         i++
       }
-    }
-    else {
+    } else {
       // 左右两边都比对完了，然后剩下的就是中间部位顺序变动的
       // 例如下面的情况
       // a,b,[c,d,e],f,g
@@ -265,8 +260,7 @@ export function createRenderer(options) {
           // 这里就可以通过key快速的查找了， 看看在新的里面这个节点存在不存在
           // 时间复杂度O(1)
           newIndex = keyToNewIndexMap.get(prevChild.key)
-        }
-        else {
+        } else {
           // 如果没key 的话，那么只能是遍历所有的新节点来确定当前节点存在不存在了
           // 时间复杂度O(n)
           for (let j = s2; j <= e2; j++) {
@@ -282,8 +276,7 @@ export function createRenderer(options) {
         if (newIndex === undefined) {
           // 当前节点的key 不存在于 newChildren 中，需要把当前节点给删除掉
           hostRemove(prevChild.el)
-        }
-        else {
+        } else {
           // 新老节点都存在
           console.log('新老节点都存在')
           // 把新节点的索引和老的节点的索引建立映射关系
@@ -295,8 +288,7 @@ export function createRenderer(options) {
           // 不是升序的话，我们就可以确定节点移动过了
           if (newIndex >= maxNewIndexSoFar) {
             maxNewIndexSoFar = newIndex
-          }
-          else {
+          } else {
             moved = true
           }
 
@@ -335,16 +327,14 @@ export function createRenderer(options) {
           // 说明新节点在老的里面不存在
           // 需要创建
           patch(null, nextChild, container, anchor, parentComponent)
-        }
-        else if (moved) {
+        } else if (moved) {
           // 需要移动
           // 1. j 已经没有了 说明剩下的都需要移动了
           // 2. 最长子序列里面的值和当前的值匹配不上， 说明当前元素需要移动
           if (j < 0 || increasingNewIndexSequence[j] !== i) {
             // 移动的话使用 insert 即可
             hostInsert(nextChild.el, container, anchor)
-          }
-          else {
+          } else {
             // 这里就是命中了  index 和 最长递增子序列的值
             // 所以可以移动指针了
             j--
@@ -400,8 +390,7 @@ export function createRenderer(options) {
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       // 如：h('p', {}, 'Tag <p>'s content'),children就是'Tag <p>'s content'
       el.textContent = children
-    }
-    else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+    } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
       // 如：h('p', {}, [h('span', {}, 'span1 content'), h('span', {}, 'span2 content')])
       // children就是[h('span', {}, 'span1 content'), h('span', {}, 'span2 content')]
       mountChildren(vnode.children, el, parentComponent, anchor)
@@ -442,24 +431,23 @@ export function createRenderer(options) {
     setupRenderEffect(instance, initialVNode, container, anchor) // 调用App中的render
   }
   function setupRenderEffect(instance, initialVNode, container, anchor) {
-
     function componentUpdateFn() {
       if (!instance.isMounted) {
         // 组件初始化的时候会执行这里
         // 为什么要在这里调用 render 函数呢
         // 是因为在 effect 内调用 render 才能触发依赖收集
         // 等到后面响应式的值变更后会再次触发这个函数
-        console.log(`${instance.type.name}:调用 render,获取 subTree`);
-        const proxyToUse = instance.proxy;
+        console.log(`${instance.type.name}:调用 render,获取 subTree`)
+        const proxyToUse = instance.proxy
         // 可在 render 函数中通过 this 来使用 proxy
         const subTree = (instance.subTree = normalizeVNode(
           instance.render.call(proxyToUse, proxyToUse)
-        ));
-        console.log("subTree", subTree);
+        ))
+        console.log('subTree', subTree)
 
         // todo
-        console.log(`${instance.type.name}:触发 beforeMount hook`);
-        console.log(`${instance.type.name}:触发 onVnodeBeforeMount hook`);
+        console.log(`${instance.type.name}:触发 beforeMount hook`)
+        console.log(`${instance.type.name}:触发 onVnodeBeforeMount hook`)
 
         // 这里基于 subTree 再次调用 patch
         // 基于 render 返回的 vnode ，再次进行渲染
@@ -471,45 +459,45 @@ export function createRenderer(options) {
         // 而 subTree 就是当前的这个箱子（组件）装的东西
         // 箱子（组件）只是个概念，它实际是不需要渲染的
         // 要渲染的是箱子里面的 subTree
-        patch(null, subTree, container, null, instance);
+        patch(null, subTree, container, null, instance)
         // 把 root element 赋值给 组件的vnode.el ，为后续调用 $el 的时候获取值
-        initialVNode.el = subTree.el;
+        initialVNode.el = subTree.el
 
-        console.log(`${instance.type.name}:触发 mounted hook`);
-        instance.isMounted = true;
+        console.log(`${instance.type.name}:触发 mounted hook`)
+        instance.isMounted = true
       } else {
         // 响应式的值变更后会从这里执行逻辑
         // 主要就是拿到新的 vnode ，然后和之前的 vnode 进行对比
-        console.log(`${instance.type.name}:调用更新逻辑`);
+        console.log(`${instance.type.name}:调用更新逻辑`)
         // 拿到最新的 subTree
-        const { next, vnode } = instance;
+        const { next, vnode } = instance
 
         // 如果有 next 的话， 说明需要更新组件的数据（props，slots 等）
         // 先更新组件的数据，然后更新完成后，在继续对比当前组件的子元素
         if (next) {
           // 问题是 next 和 vnode 的区别是什么
-          next.el = vnode.el;
-          updateComponentPreRender(instance, next);
+          next.el = vnode.el
+          updateComponentPreRender(instance, next)
         }
 
-        const proxyToUse = instance.proxy;
+        const proxyToUse = instance.proxy
         const nextTree = normalizeVNode(
           instance.render.call(proxyToUse, proxyToUse)
-        );
+        )
         // 替换之前的 subTree
-        const prevTree = instance.subTree;
-        instance.subTree = nextTree;
+        const prevTree = instance.subTree
+        instance.subTree = nextTree
 
         // 触发 beforeUpdated hook
-        console.log(`${instance.type.name}:触发 beforeUpdated hook`);
-        console.log(`${instance.type.name}:触发 onVnodeBeforeUpdate hook`);
+        console.log(`${instance.type.name}:触发 beforeUpdated hook`)
+        console.log(`${instance.type.name}:触发 onVnodeBeforeUpdate hook`)
 
         // 用旧的 vnode 和新的 vnode 交给 patch 来处理
-        patch(prevTree, nextTree, prevTree.el, null, instance);
+        patch(prevTree, nextTree, prevTree.el, null, instance)
 
         // 触发 updated hook
-        console.log(`${instance.type.name}:触发 updated hook`);
-        console.log(`${instance.type.name}:触发 onVnodeUpdated hook`);
+        console.log(`${instance.type.name}:触发 updated hook`)
+        console.log(`${instance.type.name}:触发 onVnodeUpdated hook`)
       }
     }
 
@@ -522,8 +510,7 @@ export function createRenderer(options) {
         // 如果所有element都已经初始化完成
         initialVNode.el = subTree.el
         instance.isMounted = true
-      }
-      else {
+      } else {
         // 更新
         console.log('update')
         const { proxy } = instance
