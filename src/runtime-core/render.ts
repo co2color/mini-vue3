@@ -3,7 +3,7 @@ import { EMPTY_OBJ } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
 import { createAppAPI } from './createApp'
-import { Fragment, Text } from './vnode'
+import { Fragment, Text, normalizeVNode } from './vnode'
 
 function getSequence(arr: number[]): number[] {
   const p = arr.slice()
@@ -47,7 +47,6 @@ function getSequence(arr: number[]): number[] {
   return result
 }
 
-function setupRenderEffect(instance, initialVNode, container) { }
 
 function updateComponentPreRender(instance, nextVNode) {
   // 更新 nextVNode 的组件实例
@@ -443,6 +442,77 @@ export function createRenderer(options) {
     setupRenderEffect(instance, initialVNode, container, anchor) // 调用App中的render
   }
   function setupRenderEffect(instance, initialVNode, container, anchor) {
+
+    function componentUpdateFn() {
+      if (!instance.isMounted) {
+        // 组件初始化的时候会执行这里
+        // 为什么要在这里调用 render 函数呢
+        // 是因为在 effect 内调用 render 才能触发依赖收集
+        // 等到后面响应式的值变更后会再次触发这个函数
+        console.log(`${instance.type.name}:调用 render,获取 subTree`);
+        const proxyToUse = instance.proxy;
+        // 可在 render 函数中通过 this 来使用 proxy
+        const subTree = (instance.subTree = normalizeVNode(
+          instance.render.call(proxyToUse, proxyToUse)
+        ));
+        console.log("subTree", subTree);
+
+        // todo
+        console.log(`${instance.type.name}:触发 beforeMount hook`);
+        console.log(`${instance.type.name}:触发 onVnodeBeforeMount hook`);
+
+        // 这里基于 subTree 再次调用 patch
+        // 基于 render 返回的 vnode ，再次进行渲染
+        // 这里我把这个行为隐喻成开箱
+        // 一个组件就是一个箱子
+        // 里面有可能是 element （也就是可以直接渲染的）
+        // 也有可能还是 component
+        // 这里就是递归的开箱
+        // 而 subTree 就是当前的这个箱子（组件）装的东西
+        // 箱子（组件）只是个概念，它实际是不需要渲染的
+        // 要渲染的是箱子里面的 subTree
+        patch(null, subTree, container, null, instance);
+        // 把 root element 赋值给 组件的vnode.el ，为后续调用 $el 的时候获取值
+        initialVNode.el = subTree.el;
+
+        console.log(`${instance.type.name}:触发 mounted hook`);
+        instance.isMounted = true;
+      } else {
+        // 响应式的值变更后会从这里执行逻辑
+        // 主要就是拿到新的 vnode ，然后和之前的 vnode 进行对比
+        console.log(`${instance.type.name}:调用更新逻辑`);
+        // 拿到最新的 subTree
+        const { next, vnode } = instance;
+
+        // 如果有 next 的话， 说明需要更新组件的数据（props，slots 等）
+        // 先更新组件的数据，然后更新完成后，在继续对比当前组件的子元素
+        if (next) {
+          // 问题是 next 和 vnode 的区别是什么
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next);
+        }
+
+        const proxyToUse = instance.proxy;
+        const nextTree = normalizeVNode(
+          instance.render.call(proxyToUse, proxyToUse)
+        );
+        // 替换之前的 subTree
+        const prevTree = instance.subTree;
+        instance.subTree = nextTree;
+
+        // 触发 beforeUpdated hook
+        console.log(`${instance.type.name}:触发 beforeUpdated hook`);
+        console.log(`${instance.type.name}:触发 onVnodeBeforeUpdate hook`);
+
+        // 用旧的 vnode 和新的 vnode 交给 patch 来处理
+        patch(prevTree, nextTree, prevTree.el, null, instance);
+
+        // 触发 updated hook
+        console.log(`${instance.type.name}:触发 updated hook`);
+        console.log(`${instance.type.name}:触发 onVnodeUpdated hook`);
+      }
+    }
+
     effect(() => {
       if (!instance.isMounted) {
         console.log('init')

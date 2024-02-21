@@ -38,3 +38,11 @@ export function getShapeFlag(type) {
 export function createTextVNode(text: string) {
   return createVNode(Text, {}, text)
 }
+export function normalizeVNode(child) {
+  // 暂时只支持处理 child 为 string 和 number 的情况
+  if (typeof child === "string" || typeof child === "number") {
+    return createVNode(Text, null, String(child));
+  } else {
+    return child;
+  }
+}
