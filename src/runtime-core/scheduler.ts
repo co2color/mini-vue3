@@ -29,3 +29,21 @@ function queueCb(cb, activeQueue) {
   // 然后执行队列里面所有的 job
   queueFlush()
 }
+
+function flushJobs() {
+  isFlushPending = false
+
+  // 先执行 pre 类型的 job
+  // 所以这里执行的job 是在渲染前的
+  // 也就意味着执行这里的 job 的时候 页面还没有渲染
+  flushPreFlushCbs()
+
+  // 这里是执行 queueJob 的
+  // 比如 render 渲染就是属于这个类型的 job
+  let job
+  while ((job = queue.shift())) {
+    if (job) {
+      job()
+    }
+  }
+}
