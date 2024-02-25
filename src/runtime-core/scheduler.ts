@@ -16,3 +16,16 @@ function queueFlush() {
   isFlushPending = true
   nextTick(flushJobs)
 }
+export function queuePreFlushCb(cb) {
+  queueCb(cb, activePreFlushCbs)
+}
+
+function queueCb(cb, activeQueue) {
+  // 直接添加到对应的列表内就ok
+  // todo 这里没有考虑 activeQueue 是否已经存在 cb 的情况
+  // 然后在执行 flushJobs 的时候就可以调用 activeQueue 了
+  activeQueue.push(cb)
+
+  // 然后执行队列里面所有的 job
+  queueFlush()
+}
