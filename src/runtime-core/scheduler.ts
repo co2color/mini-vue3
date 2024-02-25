@@ -47,3 +47,10 @@ function flushJobs() {
     }
   }
 }
+
+function flushPreFlushCbs() {
+  // 执行所有的 pre 类型的 job
+  for (let i = 0; i < activePreFlushCbs.length; i++) {
+    activePreFlushCbs[i]()
+  }
+}
