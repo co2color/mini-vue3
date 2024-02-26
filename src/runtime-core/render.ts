@@ -155,7 +155,7 @@ export function createRenderer(options) {
         hostSetElementText(container, '')
         mountChildren(c2, container, parentComponent, anchor)
       } else {
-        // array -> array
+        // 新老都是数组的情况，需要 diff
         patchKeyedChildren(c1, c2, container, parentComponent, anchor)
       }
     }
