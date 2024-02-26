@@ -137,10 +137,13 @@ export function createRenderer(options) {
 
     // 如果新的是文本节点
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      // 如果老的是数组，说明这次是array -> text，先把老的数组删除
       if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         // remove 清空老的children
         unmountChildren(n1.children)
       }
+
+      // 新的是文本节点，直接设置文本即可
       if (c1 !== c2) {
         hostSetElementText(container, c2)
       }
