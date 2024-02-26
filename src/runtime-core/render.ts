@@ -147,8 +147,10 @@ export function createRenderer(options) {
       if (c1 !== c2) {
         hostSetElementText(container, c2)
       }
-    } else {
-      // new array
+    }
+    // 如果新的是数组
+    else {
+      // 老的是文本节点，直接清空文本节点，然后挂载children
       if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
         hostSetElementText(container, '')
         mountChildren(c2, container, parentComponent, anchor)
