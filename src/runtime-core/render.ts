@@ -161,6 +161,7 @@ export function createRenderer(options) {
     }
   }
 
+  // diff 算法
   function patchKeyedChildren(
     c1,
     c2,
