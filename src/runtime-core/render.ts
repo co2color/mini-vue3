@@ -135,6 +135,7 @@ export function createRenderer(options) {
     const c1 = n1.children
     const c2 = n2.children
 
+    // 如果新的是文本节点
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         // remove 清空老的children
