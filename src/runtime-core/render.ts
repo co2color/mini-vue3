@@ -72,6 +72,7 @@ export function createRenderer(options) {
     insert: hostInsert,
     remove: hostRemove,
     setElementText: hostSetElementText,
+    setText: hostSetText,
   } = options
 
   function render(vnode, container: HTMLElement) {
