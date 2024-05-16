@@ -3,6 +3,7 @@ import { EMPTY_OBJ } from "../shared";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { createAppAPI } from "./createApp";
+import { shouldUpdateComponent } from "./componentRenderUtils";
 import { Fragment, Text, normalizeVNode } from "./vnode";
 
 function getSequence(arr: number[]): number[] {
