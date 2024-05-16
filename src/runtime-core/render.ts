@@ -479,7 +479,19 @@ export function createRenderer(options) {
 
     setupRenderEffect(instance, initialVNode, container);
   }
-  function setupRenderEffect(instance, initialVNode, container, anchor) {
+  function setupRenderEffect(instance, initialVNode, container) {
+    // 调用 render
+    // 应该传入 ctx 也就是 proxy
+    // ctx 可以选择暴露给用户的 api
+    // 源代码里面是调用的 renderComponentRoot 函数
+    // 这里为了简化直接调用 render
+
+    // obj.name  = "111"
+    // obj.name = "2222"
+    // 从哪里做一些事
+    // 收集数据改变之后要做的事 (函数)
+    // 依赖收集   effect 函数
+    // 触发依赖
     function componentUpdateFn() {
       if (!instance.isMounted) {
         // 组件初始化的时候会执行这里
@@ -550,24 +562,18 @@ export function createRenderer(options) {
       }
     }
 
-    effect(() => {
-      if (!instance.isMounted) {
-        console.log("init");
-        const { proxy } = instance;
-        const subTree = (instance.subTree = instance.render.call(proxy));
-        patch(null, subTree, container, instance, anchor);
-        // 如果所有element都已经初始化完成
-        initialVNode.el = subTree.el;
-        instance.isMounted = true;
-      } else {
-        // 更新
-        console.log("update");
-        const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
-        const prevTree = instance.subTree; // 上一次的subTree
-        instance.subTree = subTree;
-        patch(prevTree, subTree, container, instance, anchor);
-      }
+    // 在 vue3.2 版本里面是使用的 new ReactiveEffect
+    // 至于为什么不直接用 effect ，是因为需要一个 scope  参数来收集所有的 effect
+    // 而 effect 这个函数是对外的 api ，是不可以轻易改变参数的，所以会使用  new ReactiveEffect
+    // 因为 ReactiveEffect 是内部对象，加一个参数是无所谓的
+    // 后面如果要实现 scope 的逻辑的时候 需要改过来
+    // 现在就先算了
+    instance.update = effect(componentUpdateFn, {
+      scheduler: () => {
+        // 把 effect 推到微任务的时候在执行
+        // queueJob(effect);
+        queueJob(instance.update);
+      },
     });
   }
   return {
