@@ -184,7 +184,7 @@ export function createRenderer(options) {
       // 老的是文本节点，直接清空文本节点，然后挂载children
       if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
         hostSetElementText(container, "");
-        mountChildren(c2, container, parentComponent, anchor);
+        mountChildren(c2, container);
       } else {
         // 新老都是数组的情况，需要 diff
         patchKeyedChildren(c1, c2, container, parentComponent, anchor);
@@ -431,7 +431,7 @@ export function createRenderer(options) {
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
       // 如：h('p', {}, [h('span', {}, 'span1 content'), h('span', {}, 'span2 content')])
       // children就是[h('span', {}, 'span1 content'), h('span', {}, 'span2 content')]
-      mountChildren(vnode.children, el, parentComponent, anchor);
+      mountChildren(vnode.children, el);
     }
 
     if (vnode.props) {
