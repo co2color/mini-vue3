@@ -451,10 +451,13 @@ export function createRenderer(options) {
     // container.appendChild(el)
     hostInsert(el, container);
   }
-
-  function mountChildren(children, container, parentComponent, anchor) {
-    children.forEach((child) => {
-      patch(null, child, container, parentComponent, anchor);
+  function mountChildren(children, container) {
+    children.forEach((VNodeChild) => {
+      // todo
+      // 这里应该需要处理一下 vnodeChild
+      // 因为有可能不是 vnode 类型
+      console.log("mountChildren:", VNodeChild);
+      patch(null, VNodeChild, container);
     });
   }
 
