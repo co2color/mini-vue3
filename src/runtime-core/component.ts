@@ -46,9 +46,9 @@ function setupStatefulComponent(instance) {
 }
 
 function handleSetupResult(instance, setupResult) {
-  if (typeof setupResult === 'object') {
+  if (typeof setupResult === 'object')
     instance.setupState = proxyRefs(setupResult)
-  }
+
   finishComponentSetup(instance)
 }
 function finishComponentSetup(instance: any) {

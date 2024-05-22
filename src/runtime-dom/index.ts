@@ -17,11 +17,10 @@ function patchProp(el, key, prevVal, nextVal) {
     }
   }
   else {
-    if (nextVal === undefined || nextVal === null) {
+    if (nextVal === undefined || nextVal === null)
       el.removeAttribute(key)
-    }
 
-    else { el.setAttribute(key, nextVal) }
+    else el.setAttribute(key, nextVal)
   }
 }
 function insert(child, parent, anchor) {
@@ -29,9 +28,8 @@ function insert(child, parent, anchor) {
 }
 function remove(child) {
   const parent = child.parentNode
-  if (parent) {
+  if (parent)
     parent.removeChild(child)
-  }
 }
 
 function setElementText(el, text) {
