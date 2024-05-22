@@ -16,5 +16,8 @@
       "esnext",
       "DOM"
     ],
+    "types": [
+      "jest"
+    ],
   },
 }
