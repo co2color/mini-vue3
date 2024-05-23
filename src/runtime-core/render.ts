@@ -24,17 +24,16 @@ function getSequence(arr: number[]): number[] {
       v = result.length - 1
       while (u < v) {
         c = (u + v) >> 1
-        if (arr[result[c]] < arrI) {
+        if (arr[result[c]] < arrI)
           u = c + 1
-        }
-        else {
+
+        else
           v = c
-        }
       }
       if (arrI < arr[result[u]]) {
-        if (u > 0) {
+        if (u > 0)
           p[i] = result[u - 1]
-        }
+
         result[u] = i
       }
     }
@@ -145,12 +144,11 @@ export function createRenderer(options) {
     }
   }
   function processElement(n1, n2, container, parentComponent, anchor) {
-    if (!n1) {
+    if (!n1)
       mountElement(n2, container, parentComponent, anchor)
-    }
-    else {
+
+    else
       patchElement(n1, n2, container, parentComponent, anchor)
-    }
   }
 
   function patchElement(n1, n2, container, parentComponent, anchor) {
@@ -179,9 +177,8 @@ export function createRenderer(options) {
       }
 
       // 新的是文本节点，直接设置文本即可
-      if (c1 !== c2) {
+      if (c1 !== c2)
         hostSetElementText(container, c2)
-      }
     }
     // 如果新的是数组
     else {
@@ -219,12 +216,12 @@ export function createRenderer(options) {
     while (i <= e1 && i <= e2) {
       const n1 = c1[i]
       const n2 = c2[i]
-      if (isSameVNodeType(n1, n2)) {
+      if (isSameVNodeType(n1, n2))
         patch(n1, n2, container, parentComponent, parentAnchor)
-      }
-      else {
+
+      else
         break
-      }
+
       i++
     }
     console.log(i)
@@ -233,12 +230,12 @@ export function createRenderer(options) {
     while (i <= e1 && i <= e2) {
       const n1 = c1[e1]
       const n2 = c2[e2]
-      if (isSameVNodeType(n1, n2)) {
+      if (isSameVNodeType(n1, n2))
         patch(n1, n2, container, parentComponent, parentAnchor)
-      }
-      else {
+
+      else
         break
-      }
+
       e1--
       e2--
     }
@@ -334,12 +331,11 @@ export function createRenderer(options) {
           // 新的 newIndex 如果一直是升序的话，那么就说明没有移动
           // 所以我们可以记录最后一个节点在新的里面的索引，然后看看是不是升序
           // 不是升序的话，我们就可以确定节点移动过了
-          if (newIndex >= maxNewIndexSoFar) {
+          if (newIndex >= maxNewIndexSoFar)
             maxNewIndexSoFar = newIndex
-          }
-          else {
+
+          else
             moved = true
-          }
 
           patch(prevChild, c2[newIndex], container, null, parentComponent)
           patched++
@@ -404,9 +400,8 @@ export function createRenderer(options) {
 
   function patchProps(el, oldProps, newProps) {
     // 如果props没有变化，那么直接返回，不需要处理
-    if (oldProps === newProps) {
+    if (oldProps === newProps)
       return
-    }
 
     // props有变化，需要把新的props设置到el上
     for (const key in newProps) {
