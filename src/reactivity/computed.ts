@@ -16,9 +16,8 @@ class ComputedRefImpl {
       // 会执行这个函数，而不是执行run进而执行getter
       // 也就是说，有了这个scheduler，getter里面的依赖的值发生变化的时候，
       // 就不会执行getter这个callback了
-      if (!this._dirty) {
+      if (!this._dirty)
         this._dirty = true
-      }
     })
   }
 
