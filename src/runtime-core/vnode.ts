@@ -13,18 +13,16 @@ export function createVNode(type, props?, children?) {
     el: null,
     shapeFlag: getShapeFlag(type),
   }
-  if (Array.isArray(children)) {
+  if (Array.isArray(children))
     vnode.shapeFlag |= ShapeFlags.ARRAY_CHILDREN
-  }
-  else {
+
+  else
     vnode.shapeFlag |= ShapeFlags.TEXT_CHILDREN
-  }
 
   // 组件+children object
   if (vnode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    if (typeof vnode.type === 'object') {
+    if (typeof vnode.type === 'object')
       vnode.shapeFlag |= ShapeFlags.SLOT_CHILDREN
-    }
   }
   return vnode
 }
@@ -40,9 +38,8 @@ export function createTextVNode(text: string) {
 }
 export function normalizeVNode(child) {
   // 暂时只支持处理 child 为 string 和 number 的情况
-  if (typeof child === "string" || typeof child === "number") {
-    return createVNode(Text, null, String(child));
-  } else {
-    return child;
-  }
+  if (typeof child === 'string' || typeof child === 'number')
+    return createVNode(Text, null, String(child))
+  else
+    return child
 }
