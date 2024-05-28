@@ -27,9 +27,9 @@ export function inject(key, defaultValue) {
       return provides[key]
     }
     else if (defaultValue) {
-      if (typeof defaultValue === 'function') {
+      if (typeof defaultValue === 'function')
         return defaultValue()
-      }
+
       return defaultValue
     }
   }
