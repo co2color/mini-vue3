@@ -1,12 +1,11 @@
 import { createApp } from '../../lib/guide-mini-vue.esm.js'
 import { App } from './App.js'
+
 const rootComponent = document.querySelector('#app')
 
 createApp(App).mount(rootComponent)
-console.log(PIXI);
 
-
-/* 
+/*
 h函数（即createVNode）的第一个参数type，就是App这个对象，
 该对象相当于一个组件，包含render和setup等等。
 createApp(App)说明创建一个App组件，mount(rootComponent)说明将App组件挂载到rootComponent上。
